@@ -55,7 +55,7 @@ def move_to_done_folder(csv_file_path):
     os.rename(csv_file_path, os.path.join(done_folder, filename))
 
 if __name__ == '__main__':
-    csv_file_path = 'rfid_tags_orginal.csv'
+    csv_file_path = 'rfid_tags_original.csv'
     json_data = convert_to_json(csv_file_path)
     output_path = 'rfid_tags_converted.json'
     write_json_file(json_data, output_path)
