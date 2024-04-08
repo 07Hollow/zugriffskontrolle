@@ -57,6 +57,7 @@ def move_to_done_folder(csv_file_path):
 if __name__ == '__main__':
     csv_file_path = 'rfid_tags_original.csv'
     json_data = convert_to_json(csv_file_path)
-    output_path = 'rfid_tags_converted.json'
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    output_path = f"rfid_tags_{current_date}.json"
     write_json_file(json_data, output_path)
     move_to_done_folder(csv_file_path)
