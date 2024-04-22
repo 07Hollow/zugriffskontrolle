@@ -19,24 +19,34 @@ def convert_to_json(csv_file_path):
         list: A list of JSON objects representing the data from the CSV file.
     """
     json_data = []
-    time_stamp = datetime.now()
+    time_stamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Timestamp created only once
     try:
         with open(csv_file_path, newline='', encoding='utf-8-sig') as csv_file:
             csv_reader = csv.DictReader(csv_file, delimiter=';')
             for row in csv_reader:
                 # Convert date and time strings to a datetime object
-                datetime_str = f"{row['date']} {row['time']}"
-                date_time_obj = datetime.strptime(datetime_str, '%d.%m.%Y %H:%M:%S')
+                date_str = f"{row['date']}"
+                time_str = f"{row['time']}"
+                date_obj = datetime.strptime(date_str, '%d.%m.%Y')
+                time_obj = datetime.strptime(time_str, '%H:%M:%S')
 
                 # Build JSON object
                 entry = {
                     'id': int(row['id']),
                     'rfid_number': row['rfid_number'],
-                    'date_time': date_time_obj.strftime('%Y-%m-%d %H:%M:%S')  # Convert datetime to string
+                    'date': date_obj.strftime('%Y-%m-%d'),  # Convert datetime to string
+                    'time': time_obj.strftime('%H:%M:%S')  # Convert datetime to string
                 }
-                entry['time_stamp'] = time_stamp.strftime('%H:%M:%S')  # Add timestamp
+                # entry['time_stamp'] = time_stamp.strftime('%H:%M:%S')  # Add timestamp
                 json_data.append(entry)
-        return json_data
+
+                # Create JSON object with data and timestamp
+            json_output = {
+                'time_stamp': time_stamp,
+                'data': json_data
+            }
+            return json_output
+            
     except FileNotFoundError:
         return None  # Return None if CSV file does not exist
 
