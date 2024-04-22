@@ -34,10 +34,9 @@ def convert_to_json(csv_file_path):
                     'rfid_number': row['rfid_number'],
                     'date_time': date_time_obj.strftime('%Y-%m-%d %H:%M:%S')  # Convert datetime to string
                 }
-                entry = {
-                    'time_stamp': time_stamp
-                }
+                entry['time_stamp'] = time_stamp.strftime('%H:%M:%S')  # Add timestamp
                 json_data.append(entry)
+        return json_data
     except FileNotFoundError:
         return None  # Return None if CSV file does not exist
 
@@ -59,20 +58,20 @@ def move_to_done_folder(csv_file_path):
     Args:
         csv_file_path (str): The path to the CSV file.
     """
-    done_folder = 'done'
+    done_folder = 'done' # Create a folder named 'done' to store processed files
     if not os.path.exists(done_folder):
         os.makedirs(done_folder)
     filename = os.path.basename(csv_file_path)
     os.rename(csv_file_path, os.path.join(done_folder, filename))
 
-    try:
-        with open(csv_file_path, 'r', newline='', encoding='utf-8-sig') as csv_file:
+    try: 
+        with open(csv_file_path, 'r', newline='', encoding='utf-8-sig') as csv_file: 
             csv_data = csv_file.read()
         done_folder = 'done'
-        with open(f"{done_folder}/{csv_file_path.split('/')[-1]}", 'w') as done_file:
+        with open(f"{done_folder}/{csv_file_path.split('/')[-1]}", 'w') as done_file: 
             done_file.write(csv_data)
         os.remove(csv_file_path)
-    except FileNotFoundError:
+    except FileNotFoundError: 
         pass
 
 if __name__ == '__main__':
