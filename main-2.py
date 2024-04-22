@@ -1,7 +1,13 @@
+"""
+Current version
+
+Converts csv to json and moves the csv file to done folder with timestamp
+"""
+
 import csv
 import json
+import os
 from datetime import datetime
-
 def convert_to_json(csv_file_path):
     """
     Converts data from a CSV file to a list of JSON objects.
@@ -13,7 +19,7 @@ def convert_to_json(csv_file_path):
         list: A list of JSON objects representing the data from the CSV file.
     """
     json_data = []
-    start_time = datetime.now()  # Record start time for processing
+    time_stamp = datetime.now()
     try:
         with open(csv_file_path, newline='', encoding='utf-8-sig') as csv_file:
             csv_reader = csv.DictReader(csv_file, delimiter=';')
@@ -28,15 +34,12 @@ def convert_to_json(csv_file_path):
                     'rfid_number': row['rfid_number'],
                     'date_time': date_time_obj.strftime('%Y-%m-%d %H:%M:%S')  # Convert datetime to string
                 }
+                entry = {
+                    'time_stamp': time_stamp
+                }
                 json_data.append(entry)
     except FileNotFoundError:
         return None  # Return None if CSV file does not exist
-    end_time = datetime.now()  # Record end time for processing
-    processing_time = end_time - start_time  # Calculate processing time
-    # Update each record with processing time
-    for entry in json_data:
-        entry['processing_time'] = processing_time.total_seconds()
-    return json_data
 
 def write_json_file(data, output_path):
     """
@@ -56,13 +59,18 @@ def move_to_done_folder(csv_file_path):
     Args:
         csv_file_path (str): The path to the CSV file.
     """
+    done_folder = 'done'
+    if not os.path.exists(done_folder):
+        os.makedirs(done_folder)
+    filename = os.path.basename(csv_file_path)
+    os.rename(csv_file_path, os.path.join(done_folder, filename))
+
     try:
         with open(csv_file_path, 'r', newline='', encoding='utf-8-sig') as csv_file:
             csv_data = csv_file.read()
         done_folder = 'done'
         with open(f"{done_folder}/{csv_file_path.split('/')[-1]}", 'w') as done_file:
             done_file.write(csv_data)
-        import os
         os.remove(csv_file_path)
     except FileNotFoundError:
         pass

@@ -1,6 +1,8 @@
 """
 This is the first version of the code. It is depracated and should not be used.
 The current version of the code is in main-2.py.
+
+Only Converts csv to json and moves the csv file to done folder.
 """
 
 import csv
