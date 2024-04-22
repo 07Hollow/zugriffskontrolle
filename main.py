@@ -1,3 +1,8 @@
+"""
+This is the first version of the code. It is depracated and should not be used.
+The current version of the code is in main-2.py.
+"""
+
 import csv
 import json
 import os
@@ -14,16 +19,13 @@ def convert_to_json(csv_file_path):
         list: A list of JSON objects representing the data from the CSV file.
     """
     json_data = []
-    if not os.path.exists(csv_file_path):
-        return None  # Return None if CSV file does not exist
-
     with open(csv_file_path, encoding='utf-8-sig') as csv_file:
         csv_reader = csv.DictReader(csv_file, delimiter=';')
         for row in csv_reader:
             # Convert date and time strings to a datetime object
             datetime_str = f"{row['date']} {row['time']}"
             date_time_obj = datetime.strptime(datetime_str, '%d.%m.%Y %H:%M:%S')
-
+            
             # Build JSON object
             entry = {
                 'id': int(row['id']),
@@ -58,14 +60,8 @@ def move_to_done_folder(csv_file_path):
     os.rename(csv_file_path, os.path.join(done_folder, filename))
 
 if __name__ == '__main__':
-    csv_file_path = 'rfid_tags_original.csv'
+    csv_file_path = 'rfid_tags_orginal.csv'
     json_data = convert_to_json(csv_file_path)
-
-    if json_data is not None:
-        current_date = datetime.now().strftime("%Y-%m-%d")
-        output_path = f"rfid_tags_{current_date}.json"
-        write_json_file(json_data, output_path)
-        move_to_done_folder(csv_file_path)
-        print("Conversion successful. JSON file created and CSV file moved to 'done' folder.")
-    else:
-        print("No CSV file found or empty CSV file detected. No conversion performed.")
+    output_path = 'rfid_tags_converted.json'
+    write_json_file(json_data, output_path)
+    move_to_done_folder(csv_file_path)
